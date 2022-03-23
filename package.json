@@ -1,12 +1,13 @@
 {
   "name": "@gowiny/uni-router",
-  "version": "1.0.1",
+  "alias": "gowiny-uni-router",
+  "version": "1.0.2",
   "description": "uniapp vue3 版本的 路由守卫，提供beforeEach 和afterEach 2个守卫",
-  "main": "dist/gowiny-uni-router.cjs.js",
-  "module": "dist/gowiny-uni-router.esm-bundler.js",
-  "unpkg": "dist/gowiny-uni-router.global.js",
-  "jsdelivr": "dist/gowiny-uni-router.global.js",
-  "types": "dist/gowiny-uni-router.d.ts",
+  "main": "dist/index.global.js",
+  "module": "dist/index.esm.js",
+  "unpkg": "dist/index.global.js",
+  "jsdelivr": "dist/index.global.js",
+  "types": "dist/index.d.ts",
   "sideEffects": false,
   "files": [
     "dist"
@@ -46,35 +47,33 @@
   },
   "homepage": "https://gitee.com/gowiny/uni-router",
   "dependencies": {
+    "@babel/runtime": "^7.17.8",
     "@gowiny/js-utils": "^1.0.0",
     "qs": "^6.9.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.11.4",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/plugin-proposal-decorators": "^7.10.5",
-    "@babel/preset-env": "^7.11.0",
-    "@babel/preset-typescript": "^7.10.4",
-    "@microsoft/api-extractor": "^7.9.9",
+    "@babel/core": "^7.17.8",
+    "@babel/plugin-proposal-class-properties": "^7.16.7",
+    "@babel/plugin-proposal-decorators": "^7.17.8",
+    "@babel/plugin-transform-classes": "^7.16.7",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-typescript": "^7.16.7",
+    "@microsoft/api-extractor": "^7.19.5",
+    "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-replace": "^4.0.0",
     "@types/jest": "^26.0.24",
     "@types/node": "^14.6.0",
-    "babel-jest": "^26.3.0",
-    "babel-loader": "^8.1.0",
-    "conventional-changelog-cli": "^2.1.0",
-    "prettier": "^2.0.5",
+    "@types/qs": "^6.9.7",
+    "babel-jest": "^27.5.1",
+    "conventional-changelog-cli": "^2.2.2",
+    "is-buffer": "^2.0.5",
+    "nice-try": "^3.0.0",
+    "prettier": "^2.6.0",
     "reflect-metadata": "^0.1.13",
-    "rollup": "^2.26.5",
-    "rollup-plugin-babel": "^4.4.0",
-    "rollup-plugin-replace": "^2.2.0",
-    "ts-jest": "^26.2.0",
-    "ts-loader": "^8.0.2",
-    "typescript": "^4.0.2",
-    "uglify-es": "^3.3.9",
-    "@types/qs": "^6.9.7"
-  },
-  "lib": {
-    "umdModuleIds": {
-      "@gowiny/js-utils": "@gowiny/js-utils"
-    }
+    "rollup": "^2.70.1",
+    "ts-jest": "^27.1.3",
+    "typescript": "^4.6.2",
+    "uglify-es": "^3.3.9"
   }
 }

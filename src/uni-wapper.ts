@@ -43,7 +43,7 @@ function callNavSuccess(methodName:string,options:any){
                 options.success && await options.success(...args)
             }finally{
                 StaticContext.route = StaticContext.toRoute
-                StaticContext.lastFullPath = StaticContext.route?.fullPath
+                StaticContext.lastFullPath = StaticContext.route ? StaticContext.route.fullPath : undefined
                 if(StaticContext.router &&
                     StaticContext.toRoute){
                     StaticContext.router.route = StaticContext.route
