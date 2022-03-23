@@ -22,5 +22,5 @@ then
   # publish
   git push origin refs/tags/v$VERSION
   git push
-  npm publish --tag next --access public --registry=https://registry.npmjs.org
+  npm publish --tag latest --access public --registry=https://registry.npmjs.org
 fi
