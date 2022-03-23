@@ -1,39 +1,76 @@
 # gowiny-uni-router
 
 #### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
-
-#### 软件架构
-软件架构说明
+uniapp 的 Vue 3版本的  路由守卫
+提供 beforeEach和 afterEach 2个守卫
 
 
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+* 安装：
+npm install @gowiny/uni-router
 
 
-#### 特技
+* 初始化
+* router/index.ts
+```javascript
+import { createRouter,BeforeEachResult } from '@gowiny/uni-router'
+import PAGE_DATA from '@/pages.json';
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+const router = createRouter({
+    pageData:PAGE_DATA
+})
+
+router.beforeEach((to,from)=>{
+    console.log('beforeEach 1 ,',to,from)
+})
+
+router.beforeEach(async (to,from)=>{
+    console.log('beforeEach 2 begin',to,from)
+	if(to.path != '/pages/login/login'){
+        return new Promise<BeforeEachResult>((success,fail)=>{
+            setTimeout(function(){
+                console.log('beforeEach 2 end')
+                success({
+                    path:'/pages/login/login'
+                })
+            },1000)
+        })
+    }
+})
+
+
+router.afterEach((to,from)=>{
+    console.log('afterEach 1 ,',to,from)
+})
+
+router.afterEach(async (to,from)=>{
+    console.log('afterEach 2 begin',to,from)
+    return new Promise<BeforeEachResult>((success,fail)=>{
+        setTimeout(function(){
+            console.log('afterEach 2 end')
+            success(true)
+        },1000)
+    })
+})
+
+export default router
+
+```
+
+* main.ts
+
+```javascript
+import { createSSRApp } from "vue";
+import router from './router'
+import App from "./App.vue";
+
+export function createApp() {
+  const app = createSSRApp(App);
+  app.use(router)
+  return {
+    app,
+  };
+}
+
+```
