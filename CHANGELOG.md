@@ -1,3 +1,7 @@
+## [1.0.6](https://gitee.com/gowiny/uni-router/compare/v1.0.5...v1.0.6) (2022-03-23)
+
+test
+
 ## [1.0.5](https://gitee.com/gowiny/uni-router/compare/v1.0.4...v1.0.5) (2022-03-23)
 
 test

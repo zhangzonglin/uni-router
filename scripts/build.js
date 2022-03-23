@@ -19,7 +19,11 @@ const banner = `/**
 
 
 const babelOutputConfMap = {
-  modern:{
+  esm:{
+    plugins: [getBabelOutputPlugin({
+      presets: ['@babel/preset-env'],
+      plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]]
+    })]
   },
   iife:{
   },
@@ -78,18 +82,19 @@ const builds = [
   },
   {
     file: resolve(`dist/${OUT_FILE_NAME}.esm.js`),
+    confName:'esm',
     format: 'esm',
   },
   {
     file: resolve(`dist/${OUT_FILE_NAME}.esm-browser.js`),
     format: 'esm',
-    confName:'modern',
+    confName:'esm',
     env: 'development',
   },
   {
     file: resolve(`dist/${OUT_FILE_NAME}.esm-browser.prod.js`),
     format: 'esm',
-    confName:'modern',
+    confName:'esm',
     env: 'production',
     minify: true,
   },
