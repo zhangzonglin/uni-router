@@ -277,16 +277,19 @@ export class RouterImpl implements Router {
         app.use(this)
     }
     push(to:RouteLocationRaw) {
-        lockNavjump(to, this, NavType.PUSH);
+        return lockNavjump(to, this, NavType.PUSH);
     }
     replace(to:RouteLocationRaw) {
-        lockNavjump(to, this, NavType.REPLACE);
+        return lockNavjump(to, this, NavType.REPLACE);
     }
     replaceAll(to:RouteLocationRaw) {
-        lockNavjump(to, this, NavType.REPLACE_ALL);
+        return lockNavjump(to, this, NavType.REPLACE_ALL);
     }
     pushTab(to:RouteLocationRaw) {
-        lockNavjump(to, this, NavType.PUSH_TAB);
+        return lockNavjump(to, this, NavType.PUSH_TAB);
+    }
+    back(...args:any[]){
+        return uni.navigateBack(...args)
     }
     beforeEach(userGuard:HasNextGuardHookRule):void {
         registerEachHooks(this, LifecycleHook.BEFORE_EACH, userGuard);

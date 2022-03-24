@@ -3,7 +3,22 @@
 #### 介绍
 uniapp 的 Vue 3版本的  路由守卫
 提供 beforeEach和 afterEach 2个守卫
+跳转页面，尽量用官方提供的原生api，如果想用name形式跳转，可以用路由组件提供的以下方法
 
+```javascript
+this.$Router.push = uni.navigateTo
+this.$Router.replace = uni.redirectTo
+this.$Router.replaceAll = uni.reLaunch
+this.$Router.pushTab = uni.switchTab
+this.$Router.back = uni.navigateBack
+```
+
+在页面生命周期的事件内，可以调用this.$Route获取当前路由信息
+但还是强烈建议，直接用官方提供的 getCurrentPages 方法去获取路由信息
+```javascript
+//获取当前路由
+this.$Route
+```
 
 #### 安装教程
 

@@ -138,22 +138,24 @@ export function lockNavjump(to:RouteLocationRaw,router:Router,navType:NavType,fo
         toParam.url = fullPath
     }
     toParam.$force = force
+    let result
     switch(navType){
         case NavType.PUSH :
-            uni.navigateTo(toParam)
+            result = uni.navigateTo(toParam)
             break;
         case NavType.REPLACE :
-            uni.redirectTo(toParam)
+            result = uni.redirectTo(toParam)
             break;
         case NavType.PUSH_TAB :
-            uni.switchTab(toParam)
+            result = uni.switchTab(toParam)
             break;
         case NavType.REPLACE_ALL :
-            uni.reLaunch(toParam)
+            result = uni.reLaunch(toParam)
             break;
         default :
-            error(router, '路由类型不正确')
+            throw new Error('路由类型不正确')
     }
+    return result
 }
 
 

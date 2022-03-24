@@ -1,64 +1,91 @@
 const path = require('path')
 const fs = require('fs')
 const zlib = require('zlib')
-const uglify = require('uglify-es')
+const terser = require('terser')
 const rollup = require('rollup')
 const {getBabelOutputPlugin} = require('@rollup/plugin-babel')
 const package =require('../package.json')
+const dateFormat = require("dateformat")
+
 const version = process.env.VERSION || package.version
 
 const resolve = (_path) => path.resolve(__dirname, '../', _path)
 
 const OUT_FILE_NAME = 'index'
-const EXPORT_NAME = 'GowinyUniRouter'
+const EXPORT_NAME = `${package.exportName}`
+const GLOBALS = package.lib && package.lib.globals
+const EXTERNAL = package.lib && package.lib.external || []
+if(GLOBALS){
+  for(const key in GLOBALS){
+    EXTERNAL.push(key)
+  }
+}
+
 const banner = `/**
   * ${package.alias} v${version}
+  * ${package.homepage}
+  *
   * (c) 2022-present gowiny
   * @license MIT
+  *
+  * Date: ${dateFormat(new Date(),"UTC:yyyy-mm-dd'T'HH:MM:ss'Z'")}
   */`
 
+const babelConfMap = {
+  default:{},
+  modern:{
 
-const babelOutputConfMap = {
-  esm:{
-    plugins: [getBabelOutputPlugin({
-      presets: ['@babel/preset-env'],
-      plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]]
-    })]
   },
-  iife:{
+  esm_es5:{
+    external:[/@babel\/runtime/],
+    output:{
+      plugins: [getBabelOutputPlugin({
+        presets: ['@babel/preset-env'],
+        plugins: [['@babel/plugin-transform-runtime', { useESModules: true }]]
+      })]
+    }
   },
-  legacy:{
-
+  cjs:{
+    external:[/@babel\/runtime/],
+    output:{
+      plugins: [getBabelOutputPlugin({
+        presets: ['@babel/preset-env'],
+        plugins: [['@babel/plugin-transform-runtime', { useESModules: false }]]
+      })]
+    }
   }
 }
 
 
 function genConfig(opts) {
-  const output = Object.assign({
+
+  const conf = Object.assign({},
+      babelConfMap.default,
+      babelConfMap[opts.confName]
+    )
+
+  const output = Object.assign({},
+    babelConfMap.default.output,
+    conf.output,{
     banner,
     name: EXPORT_NAME,
     exports: 'named',
-    globals: {
-      qs: 'qs',
-      '@gowiny/js-utils':'GowinyUtils'
-    }
-  },babelOutputConfMap.defalut,babelOutputConfMap[opts.confName],{
+    globals: GLOBALS
+  },{
     file:opts.file,
     format:opts.format
   })
-  delete output.confName
-  const config = {
-    plugins: [
-      getBabelOutputPlugin({
-        allowAllFormats: true,
-        presets: ['@babel/preset-env']
-      })
-    ],
-    external: ['qs','@gowiny/js-utils'],
-    input: resolve('lib/index.js'),
-    output
+
+  conf.output = output
+
+  if(EXTERNAL && EXTERNAL.length > 0){
+    let external = conf.external || []
+    external = [...external,...EXTERNAL]
+    conf.external = external
   }
-  return config
+
+  conf.input =  resolve('lib/index.js')
+  return conf
 }
 
 const builds = [
@@ -66,35 +93,36 @@ const builds = [
   {
     file: resolve(`dist/${OUT_FILE_NAME}.global.js`),
     format: 'iife',
-    confName:'iife',
+    confName:'modern',
     env: 'development',
   },
   {
     file: resolve(`dist/${OUT_FILE_NAME}.global.prod.js`),
     format: 'iife',
-    confName:'iife',
+    confName:'modern',
     env: 'production',
     minify: true,
   },
   {
     file: resolve(`dist/${OUT_FILE_NAME}.cjs.js`),
+    confName:'cjs',
     format: 'cjs',
   },
   {
     file: resolve(`dist/${OUT_FILE_NAME}.esm.js`),
-    confName:'esm',
+    confName:'modern',
     format: 'esm',
   },
   {
     file: resolve(`dist/${OUT_FILE_NAME}.esm-browser.js`),
     format: 'esm',
-    confName:'esm',
+    confName:'esm_es5',
     env: 'development',
   },
   {
     file: resolve(`dist/${OUT_FILE_NAME}.esm-browser.prod.js`),
     format: 'esm',
-    confName:'esm',
+    confName:'esm_es5',
     env: 'production',
     minify: true,
   },
@@ -113,14 +141,12 @@ async function buildEntry(rollupConf, options) {
   const result = await bundle.generate(output)
   const { code } = result.output[0]
   if (isMinify) {
-    const minifyResult = uglify.minify(code, {
+    const minified = await terser.minify(code, {
       output: {
-        preamble: output.banner,
         ascii_only: true,
       },
     })
-    const minified = minifyResult.code
-    return write(output.file, minified, true)
+    return write(output.file, minified.code, true)
   } else {
     return write(output.file, code)
   }
@@ -148,9 +174,6 @@ async function build(builds) {
 
 
 function write(dest, code, zip) {
-  //console.log('---------------')
-  //console.log('code',JSON.stringify(code))
-  //console.log('---------------')
 
   return new Promise((resolve, reject) => {
     function report(extra) {

@@ -1,7 +1,8 @@
 {
   "name": "@gowiny/uni-router",
   "alias": "gowiny-uni-router",
-  "version": "1.0.6",
+  "exportName": "GowinyUniRouter",
+  "version": "1.0.7",
   "description": "uniapp vue3 版本的 路由守卫，提供beforeEach 和afterEach 2个守卫",
   "main": "dist/index.global.js",
   "module": "dist/index.esm.js",
@@ -16,6 +17,7 @@
     "build": "yarn build:ts && yarn build:main && yarn build:dts",
     "build:ts": "tsc -p .",
     "build:main": "node scripts/build.js",
+    "build:test": "node scripts/build-test.js",
     "build:dts": "api-extractor run",
     "clean": "rimraf dist lib",
     "test": "yarn test:ts && yarn test:babel && yarn test:dts",
@@ -38,14 +40,22 @@
     "typescript"
   ],
   "author": {
-    "name": "gowiny",
+    "name": "Terry",
     "email": "terry@gowiny.com"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://gitee.com/gowiny/uni-router/issues"
+    "url": "https://gitee.com/gowiny/uni-router/issues",
+    "email": "terry@gowiny.com"
   },
   "homepage": "https://gitee.com/gowiny/uni-router",
+  "lib": {
+    "external": [],
+    "globals": {
+      "qs": "qs",
+      "@gowiny/js-utils": "GowinyUtils"
+    }
+  },
   "dependencies": {
     "@babel/runtime": "^7.17.8",
     "@gowiny/js-utils": "^1.0.0",
@@ -67,11 +77,13 @@
     "@types/qs": "^6.9.7",
     "babel-jest": "^27.5.1",
     "conventional-changelog-cli": "^2.2.2",
+    "dateformat": "^3.0.3",
     "is-buffer": "^2.0.5",
     "nice-try": "^3.0.0",
     "prettier": "^2.6.0",
     "reflect-metadata": "^0.1.13",
     "rollup": "^2.70.1",
+    "terser": "^5.12.1",
     "ts-jest": "^27.1.3",
     "typescript": "^4.6.2",
     "uglify-es": "^3.3.9"

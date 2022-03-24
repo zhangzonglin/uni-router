@@ -1,3 +1,7 @@
+## [1.0.7](https://gitee.com/gowiny/uni-router/compare/v1.0.6...v1.0.7) (2022-03-24)
+
+增加router.back 方法
+
 ## [1.0.6](https://gitee.com/gowiny/uni-router/compare/v1.0.5...v1.0.6) (2022-03-23)
 
 test
