@@ -2,7 +2,7 @@
   "name": "@gowiny/uni-router",
   "alias": "gowiny-uni-router",
   "exportName": "GowinyUniRouter",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "uniapp vue3 版本的 路由守卫，提供beforeEach 和afterEach 2个守卫",
   "main": "dist/index.global.js",
   "module": "dist/index.esm.js",
@@ -84,8 +84,8 @@
     "reflect-metadata": "^0.1.13",
     "rollup": "^2.70.1",
     "terser": "^5.12.1",
+    "jest": "^27.5.1",
     "ts-jest": "^27.1.3",
-    "typescript": "^4.6.2",
-    "uglify-es": "^3.3.9"
+    "typescript": "^4.6.2"
   }
 }

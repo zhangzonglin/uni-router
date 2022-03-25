@@ -297,7 +297,7 @@ export class RouterImpl implements Router {
     afterEach(userGuard:NoNextGuardHookRule):void {
         registerEachHooks(this, LifecycleHook.AFTER_EACH, userGuard);
     }
-    async install(app:any){
+    async install(app:any,...options: any[]){
         const router = this;
         StaticContext.app = app;
         StaticContext.router = router

@@ -1,3 +1,7 @@
+## [1.0.8](https://gitee.com/gowiny/uni-router/compare/v1.0.7...v1.0.8) (2022-03-25)
+
+处理Router的`install`方法,解决编译器提示错误
+
 ## [1.0.7](https://gitee.com/gowiny/uni-router/compare/v1.0.6...v1.0.7) (2022-03-24)
 
 增加router.back 方法

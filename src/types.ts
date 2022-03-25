@@ -81,19 +81,20 @@ export interface OriRoute{
 export type LifeCycleHooks = Record<string,Array<GuardHookRule | NoNextGuardHookRule>>
 
 export interface Router{
-    readonly routes:RouteRule[],
-    readonly proxyMethods:string[],
-    readonly routeMap:RouteRuleMap,
-    route?:Route,
-    readonly lifeCycleHooks:LifeCycleHooks,
-    readonly options:RouterOptions,
-    $locked:boolean,
-    readonly indexRouteRule:RouteRule,
+    readonly routes:RouteRule[]
+    readonly proxyMethods:string[]
+    readonly routeMap:RouteRuleMap
+    route?:Route
+    readonly lifeCycleHooks:LifeCycleHooks
+    readonly options:RouterOptions
+    $locked:boolean
+    readonly indexRouteRule:RouteRule
+    install(app: any, ...options: any[]):any
     setupRouter(app:any):void
-    push(to:RouteLocationRaw):void,
-    replace(to:RouteLocationRaw):void,
-    replaceAll(to:RouteLocationRaw) :void,
-    pushTab(to:RouteLocationRaw):void,
-    beforeEach(userGuard:HasNextGuardHookRule): void; // 添加全局前置路由守卫
-    afterEach(userGuard:NoNextGuardHookRule): void; // 添加全局后置路由
+    push(to:RouteLocationRaw):void
+    replace(to:RouteLocationRaw):void
+    replaceAll(to:RouteLocationRaw) :void
+    pushTab(to:RouteLocationRaw):void
+    beforeEach(userGuard:HasNextGuardHookRule): void // 添加全局前置路由守卫
+    afterEach(userGuard:NoNextGuardHookRule): void // 添加全局后置路由
 }
