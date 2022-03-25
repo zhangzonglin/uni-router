@@ -1,6 +1,10 @@
 # gowiny-uni-router
 
-#### 介绍
+### 详细使用方法，可以查看演示项目
+
+演示项目地址：https://gitee.com/gowiny/uni-example
+
+### 介绍
 uniapp 的 Vue 3版本的  路由守卫\
 提供 `beforeEach` 和 `afterEach` 两个守卫\
 跳转页面，尽量用官方提供的原生api，如果想用name形式跳转，可以用路由组件提供的以下方法
@@ -25,7 +29,7 @@ this.$Route.options //参数
 //pages.json 里配置page的其他信息，也会附加在此对象里
 ```
 
-#### 安装教程
+### 安装教程
 
 1.  安装：
 ```
