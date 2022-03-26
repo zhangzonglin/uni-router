@@ -1,3 +1,7 @@
+## [1.0.11](https://gitee.com/gowiny/uni-router/compare/v1.0.10...v1.0.11) (2022-03-26)
+
+
+
 ## [1.0.10](https://gitee.com/gowiny/uni-router/compare/v1.0.9...v1.0.10) (2022-03-26)
 
 解决`<router-link></router-link>` 调用报错

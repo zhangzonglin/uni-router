@@ -14,10 +14,7 @@ export default {
         path:{
             type:String
         },
-        options:{
-            type:Object
-        },
-        params:{
+        query:{
             type:Object
         },
         navType:{
@@ -62,14 +59,14 @@ export default {
                 if(this.name){
                     data = {
                         name:this.name,
-                        options:this.options,
+                        query:this.query,
                         animationType:this.animationType,
                         animationDuration:this.animationDuration
                     }
                 }else{
                     data = {
                         path:this.path,
-                        options:this.options,
+                        query:this.query,
                         animationType:this.animationType,
                         animationDuration:this.animationDuration
                     }
