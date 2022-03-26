@@ -1,6 +1,6 @@
 import { LifecycleHook, NavType } from './enums';
-import {GuardHookRule, NoNextGuardHookRule, RouterOptions, RouteRule, RouteRuleMap,
-    RouteLocationRaw,HasNextGuardHookRule, Route, UniLifecycleHook, UniLifecycleHooks,  RouterProxyMode, OriRoute} from './types'
+import {GuardHookRule,  RouterOptions, RouteRule, RouteRuleMap,
+    RouteLocationRaw, Route, UniLifecycleHook, UniLifecycleHooks,  RouterProxyMode, OriRoute} from './types'
 import {  invoke  } from '@gowiny/js-utils';
 import { addNavInterceptor } from './uni-wapper';
 import { Router } from './types';
@@ -67,7 +67,7 @@ function getOriRoute(vm:any):OriRoute{
     return routerData.oriRoute
 }
 
-function saveCurrRouteByCurrPage(router:Router, vm:any,options:object={}){
+function saveCurrRouteByCurrPage(router:Router, vm:any,query:object={}){
     const page = getCurrentPage()
     if(!page || !page.route){
         return
@@ -75,9 +75,9 @@ function saveCurrRouteByCurrPage(router:Router, vm:any,options:object={}){
     const path = '/' + page.route
     saveOriRoute(vm,{
         path,
-        options
+        query
     })
-    const currRoute:Route = getRouteByPath(router,path,options)
+    const currRoute:Route = getRouteByPath(router,path,query)
     router.route = currRoute
 }
 
@@ -112,21 +112,21 @@ async function wapperFun(router:Router,proxyMode:RouterProxyMode,vm:any,methodNa
     let result
     try{
         const path = getCurrentPagePath()
-        let options
+        let query
         if(proxyMode === 'hook' && ( UniLifecycleHooks.INIT == methodName || UniLifecycleHooks.LOAD == methodName)){
-            options = args[0] || {}
+            query = args[0] || {}
             saveOriRoute(vm,{
-                path,options
+                path,query
             })
         }else{
-            options = getOriRoute(vm).options || {}
+            query = getOriRoute(vm).query || {}
         }
         let isOk = true
         if(path){
-            const fullPath = formatFullPath(path,options)
+            const fullPath = formatFullPath(path,query)
             if(StaticContext.lastFullPath != fullPath){
                 //console.log(`当前路径跟最后路由路径不一致，需要执行守卫,${methodName}`,fullPath,StaticContext.lastFullPath)
-                const to:Route = getRouteByPath(router,path,options,fullPath)
+                const to:Route = getRouteByPath(router,path,query,fullPath)
                 const from:Route | undefined = StaticContext.route
                 StaticContext.toRoute = to
                 StaticContext.fromRoute = from
@@ -245,8 +245,6 @@ export function registerEachHooks(router:Router, hookType:LifecycleHook, userGua
 }
 
 export class RouterImpl implements Router {
-    routerPropName:string='$Router'
-    routePropName:string='$Route'
     readonly proxyMode!:RouterProxyMode
     readonly proxyMethods!:UniLifecycleHook[]
     readonly routes!:RouteRule[]
@@ -258,16 +256,9 @@ export class RouterImpl implements Router {
     route?:Route
     constructor(options:RouterOptions){
         this.options = options
-        if(options.routePropName){
-            this.routePropName = options.routePropName
-        }
-        if(options.routerPropName){
-            this.routerPropName = options.routerPropName
-        }
 
         this.proxyMode = options.proxyMode || 'hook';
         this.proxyMethods = options.proxyMethods || DEFAULT_PROXY_METHODS
-
 
         this.routes = parseRoutesFromPages(options.pageData)
         this.indexRouteRule = this.routes[0]
@@ -291,23 +282,23 @@ export class RouterImpl implements Router {
     back(...args:any[]){
         return uni.navigateBack(...args)
     }
-    beforeEach(userGuard:HasNextGuardHookRule):void {
+    beforeEach(userGuard:GuardHookRule):void {
         registerEachHooks(this, LifecycleHook.BEFORE_EACH, userGuard);
     }
-    afterEach(userGuard:NoNextGuardHookRule):void {
+    afterEach(userGuard:GuardHookRule):void {
         registerEachHooks(this, LifecycleHook.AFTER_EACH, userGuard);
     }
     async install(app:any,...options: any[]){
         const router = this;
         StaticContext.app = app;
         StaticContext.router = router
-        Object.defineProperty(app.config.globalProperties, router.routerPropName, {
+        Object.defineProperty(app.config.globalProperties, "$Router", {
             get() {
                 return router;
             }
         });
 
-        Object.defineProperty(app.config.globalProperties, router.routePropName, {
+        Object.defineProperty(app.config.globalProperties, "$Route", {
             get() {
                 return router.route;
             }
@@ -415,17 +406,17 @@ export class RouterImpl implements Router {
                         }
                     })
                 },
-                onInit(options:any){
+                onInit(query:any){
                     if(this.$mpType != 'page'){
                         return
                     }
-                    saveCurrRouteByCurrPage(router,this,options)
+                    saveCurrRouteByCurrPage(router,this,query)
                 },
-                onLoad(options:any){
+                onLoad(query:any){
                     if(this.$mpType != 'page'){
                         return
                     }
-                    saveCurrRouteByCurrPage(router,this,options)
+                    saveCurrRouteByCurrPage(router,this,query)
                 }
             }
         }

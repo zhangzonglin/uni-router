@@ -1,5 +1,5 @@
 import { BeforeEachResult, DebuggerArrayConfig,  NavTarget,  Route, RouteLocationRaw, Router, RouteRule } from "./types"
-import { isFunction, isNull, isObject, isString, queueInvoke } from "@gowiny/js-utils"
+import { isFunction,  isObject, isString, queueInvoke } from "@gowiny/js-utils"
 import qs from 'qs';
 import { LifecycleHook, NavType } from "./enums";
 import { StaticContext } from "./context";
@@ -59,15 +59,15 @@ export function invokeHook(vm:any, name:string, args:any[]) {
 }
 
 
-export function getRouteByPath(router:Router,path:string,options:any,fullPath?:string){
-    fullPath = fullPath || formatFullPath(path,options)
+export function getRouteByPath(router:Router,path:string,query:any,fullPath?:string){
+    fullPath = fullPath || formatFullPath(path,query)
     const key = path.replace(/^\//,'')
     const routeRule = router.routeMap.pathMap[key]
     let result
     if(routeRule){
-        result = {...routeRule ,fullPath,path,options}
+        result = {...routeRule ,fullPath,path,query : query}
     }else{
-        result = {fullPath,path,options}
+        result = {fullPath,path,query : query}
     }
     return result
 }
@@ -82,20 +82,20 @@ export function getRouteByUrl(url:string,router:Router){
         path = url
         queryString = ''
     }
-    const options = queryString ? qs.parse(queryString) : {}
+    const query = queryString ? qs.parse(queryString) : {}
     const key = path.replace(/^\//,'')
     const routeRule = router.routeMap.pathMap[key]
     let result
     if(routeRule){
-        result = {...routeRule ,fullPath:url,path,options}
+        result = {...routeRule ,fullPath:url,path,query}
     }else{
-        result = {fullPath:url,path,options}
+        result = {fullPath:url,path,query}
     }
     return result
 }
 
-export function formatFullPath(path:string,options:any){
-    const queryString = qs.stringify(options)
+export function formatFullPath(path:string,query:any){
+    const queryString = qs.stringify(query)
     const fullPath = queryString ? `${path}?${queryString}` : path
     return fullPath
 }
@@ -107,34 +107,21 @@ export function lockNavjump(to:RouteLocationRaw,router:Router,navType:NavType,fo
         toParam.url = to
     }else{
         const toObj = to as any
-        let path,params,query,data
+        let path,query = toObj.query
         if(toObj.name){
-            params = toObj.params
             const nameMap = router.routeMap.nameMap
             const route = nameMap[toObj.name]
             path = route.path
-            data = params
         }else{
             path = toObj.path
             query = toObj.query
-            data = query
         }
-
-        const sb:string[]=[path]
-        if(data){
-            const entries = Object.entries(data);
-            const querySb:string[] = []
-            entries.forEach(item=>{
-                let value = item[1]
-                value = isNull(value) ? '' : encodeURIComponent(value + '')
-                querySb.push(`${item[0]}=${value}`)
-            })
-            sb.push(querySb.join('&'))
-        }
-        const fullPath = sb.join('?')
-
-        toParam.animationType = toObj.animationType
-        toParam.animationDuration = toObj.animationDuration
+        const fullPath = formatFullPath(path,query)
+        const otherParams = {...toObj}
+        delete otherParams.name
+        delete otherParams.path
+        delete otherParams.query
+        Object.assign(toParam,otherParams)
         toParam.url = fullPath
     }
     toParam.$force = force

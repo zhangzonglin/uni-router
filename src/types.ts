@@ -24,8 +24,6 @@ export interface RouterOptions{
     pageData:any,
     proxyMode?:RouterProxyMode,
     proxyMethods?:UniLifecycleHook[],
-    routerPropName?:string,
-    routePropName?:string,
     debugger?:DebuggerConfig
 }
 
@@ -34,7 +32,7 @@ export interface RouteLocationBase{
     animationType?: 'auto' | 'none' | 'slide-in-right' | 'slide-in-left' | 'slide-in-top' | 'slide-in-bottom' | 'fade-in' | 'zoom-out' | 'zoom-fade-out' | 'pop-in',
     animationDuration?:number
 }
-export interface RouteNameLocation extends RouteLocationBase {name:string,params?:Object}
+export interface RouteNameLocation extends RouteLocationBase {name:string,query?:Object}
 export interface RoutePathLocation extends RouteLocationBase {path:string,query?:object}
 export type RouteUrlLocation = string
 export type RouteLocationRaw = RouteUrlLocation | RouteNameLocation | RoutePathLocation
@@ -46,12 +44,9 @@ export type BeforeEachResult = boolean|undefined|NavTarget
 
 export interface Route{
     fullPath?:string,
-    options?:Record<string,any>,
     name?:string,
-    params?:Object,
     path?:string,
-    queryString?:string,
-    query?:object
+    query?:Record<string,any>
 }
 export interface RouteRule {
 	path: string; // pages.json中的path 必须加上 '/' 开头
@@ -63,9 +58,7 @@ export interface RouteRule {
 	[propName: string]: any;
 }
 
-export type HasNextGuardHookRule=(to: Route, from?: Route)=>void | Promise<any>;
-export type NoNextGuardHookRule=(to: Route, from?: Route)=>void | Promise<any>;
-export type GuardHookRule=HasNextGuardHookRule | NoNextGuardHookRule
+export type GuardHookRule=(to: Route, from?: Route)=>void | Promise<any>;
 
 export interface RouteRuleMap{
     nameMap:Record<string,RouteRule>,
@@ -75,10 +68,10 @@ export interface RouteRuleMap{
 export interface OriRoute{
     path?:string,
     fullPath?:string,
-    options?:Record<string,any>
+    query?:Record<string,any>
 }
 
-export type LifeCycleHooks = Record<string,Array<GuardHookRule | NoNextGuardHookRule>>
+export type LifeCycleHooks = Record<string,Array<GuardHookRule>>
 
 export interface Router{
     readonly routes:RouteRule[]
@@ -95,6 +88,6 @@ export interface Router{
     replace(to:RouteLocationRaw):void
     replaceAll(to:RouteLocationRaw) :void
     pushTab(to:RouteLocationRaw):void
-    beforeEach(userGuard:HasNextGuardHookRule): void // 添加全局前置路由守卫
-    afterEach(userGuard:NoNextGuardHookRule): void // 添加全局后置路由
+    beforeEach(userGuard:GuardHookRule): void // 添加全局前置路由守卫
+    afterEach(userGuard:GuardHookRule): void // 添加全局后置路由
 }

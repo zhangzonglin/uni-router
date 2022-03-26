@@ -1,5 +1,5 @@
 const path = require('path')
-const fs = require('fs')
+const fs = require('fs-extra')
 const zlib = require('zlib')
 const terser = require('terser')
 const rollup = require('rollup')
@@ -169,9 +169,9 @@ async function build(builds) {
       throw error
     }
   }
+
+  fs.copy('src/components','dist/components')
 }
-
-
 
 function write(dest, code, zip) {
 

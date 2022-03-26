@@ -24,7 +24,7 @@ this.$Router.back = uni.navigateBack
 this.$Route //获取当前路由对象
 this.$Route.fullPath //完整的路径
 this.$Route.path //以/开头的路径
-this.$Route.options //参数
+this.$Route.query //参数
 
 //pages.json 里配置page的其他信息，也会附加在此对象里
 ```

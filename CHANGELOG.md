@@ -1,3 +1,7 @@
+## [1.0.9](https://gitee.com/gowiny/uni-router/compare/v1.0.8...v1.0.9) (2022-03-26)
+
+添加组件：`<router-link></router-link>`
+
 ## [1.0.8](https://gitee.com/gowiny/uni-router/compare/v1.0.7...v1.0.8) (2022-03-25)
 
 处理Router的`install`方法,解决编译器提示错误
