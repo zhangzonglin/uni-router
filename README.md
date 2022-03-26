@@ -29,6 +29,11 @@ this.$Route.query //参数
 //pages.json 里配置page的其他信息，也会附加在此对象里
 ```
 
+```xml
+<router-link name="login" :query="{id:'myid'}">跳转到登录页</router-link>
+<router-link path="/pages/index/index" :query="{name:'testname'}">跳转到首页</router-link>
+```
+
 ### 安装教程
 
 1.  安装：

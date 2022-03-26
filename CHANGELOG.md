@@ -1,3 +1,7 @@
+## [1.0.10](https://gitee.com/gowiny/uni-router/compare/v1.0.9...v1.0.10) (2022-03-26)
+
+解决`<router-link></router-link>` 调用报错
+
 ## [1.0.9](https://gitee.com/gowiny/uni-router/compare/v1.0.8...v1.0.9) (2022-03-26)
 
 添加组件：`<router-link></router-link>`

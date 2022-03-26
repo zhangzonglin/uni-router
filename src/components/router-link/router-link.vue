@@ -1,5 +1,5 @@
 <template>
-    <view @click="gotoPage"
+    <view class="router-link" @click="gotoPage"
     :hover-class="hoverClass"
     :hover-stop-propagation="hoverStopPropagation"
     :hover-start-time="hoverStartTime"
@@ -48,9 +48,8 @@ export default {
     },
     methods:{
         gotoPage(){
-            const handler = this.$Router[this.navType]
             if(this.navType == 'back'){
-                handler({
+                this.$Router[this.navType]({
                     delta:this.delta,
                     animationType:this.animationType,
                     animationDuration:this.animationDuration
@@ -75,9 +74,14 @@ export default {
                         animationDuration:this.animationDuration
                     }
                 }
-                handler(data)
+                this.$Router[this.navType](data)
             }
         }
     }
 }
 </script>
+<style>
+.router-link{
+    display: inline-block;
+}
+</style>
