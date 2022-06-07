@@ -107,11 +107,13 @@ const builds = [
     file: resolve(`dist/${OUT_FILE_NAME}.cjs.js`),
     confName:'cjs',
     format: 'cjs',
+    minify: true,
   },
   {
     file: resolve(`dist/${OUT_FILE_NAME}.esm.js`),
     confName:'modern',
     format: 'esm',
+    minify: true,
   },
   {
     file: resolve(`dist/${OUT_FILE_NAME}.esm-browser.js`),

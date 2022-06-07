@@ -1,3 +1,4 @@
+import { isNumber } from "@gowiny/js-utils";
 import { StaticContext } from "./context";
 import { getRouteByPage, getRouteByUrl,  warn,invokeAfterEach, invokeBeforeEach } from "./router-utils";
 import { Route } from "./types";
@@ -80,7 +81,7 @@ function createWapper(methodName:string){
             const router = StaticContext.router
             let to:Route
             if(METHOD_NAME_NAVIGATE_BACK == methodName){
-                const delta = options.delta as number
+                const delta:number = isNumber(options.delta) ?  options.delta : 1
                 const pages = getCurrentPages()
                 const pageIndex = pages.length - delta - 1
                 if(pageIndex  < 0){
