@@ -1,12 +1,17 @@
-import { BeforeEachResult, DebuggerArrayConfig,  NavTarget,  Route, RouteLocationRaw, Router, RouteRule } from "./types"
 import { isFunction,  isObject, isString, queueInvoke } from "@gowiny/js-utils"
+import { BeforeEachResult, DebuggerArrayConfig,  NavTarget,  Route, RouteLocationRaw, Router, RouteRule } from "./types"
 import qs from 'qs';
 import { LifecycleHook, NavType } from "./enums";
 import { StaticContext } from "./context";
 
 export function getRouteByPage(page:Page.PageInstance){
+    let path = page.route || "";
+    if(!path.startsWith("/")){
+        path = '/' + path
+    }
     const result:Route = {
-        path:page.route
+        fullPath:path,
+        path
     }
     return result
 }
@@ -174,6 +179,7 @@ export function parseRoutesFromPages({pages,subPackages=[]}:{pages:any[],subPack
 
 
 export async function callEachHooks(router:Router, hookType:LifecycleHook, to:Route,from?:Route):Promise<BeforeEachResult> {
+
     let hooks = router.lifeCycleHooks[hookType]
     const result = await queueInvoke(hooks,null,[to,from],(res)=>{
         if(res === false || isObject(res)){
@@ -182,6 +188,7 @@ export async function callEachHooks(router:Router, hookType:LifecycleHook, to:Ro
             return true
         }
     })
+
     return result
 }
 
@@ -194,14 +201,26 @@ export async function invokeBeforeEach(router:Router, to:Route,from?:Route) {
     StaticContext.beforeEachLock = true
     try{
         const hookResult = await callEachHooks(router,LifecycleHook.BEFORE_EACH,to,from)
-        if(hookResult === false || isObject(hookResult)){
+        if(hookResult === true || hookResult === undefined || hookResult === null){
+            return true;
+        }else{
             if(hookResult !== false){
-                const navTarget = hookResult as NavTarget
-                lockNavjump(navTarget.to, router, navTarget.navType,true);
+                let to:RouteLocationRaw | undefined;
+                let navType:NavType= NavType.PUSH;
+                if(isString(hookResult)){
+                    to = {path:hookResult as string};
+                    navType = NavType.PUSH;
+                }else if(isObject(hookResult)){
+                    const navTarget = hookResult as NavTarget
+                     to = navTarget.to;
+                     navType = navTarget.navType;
+                }
+                if(to){
+                    lockNavjump(to, router, navType,true);
+                }
             }
             return false
         }
-        return true
     }finally{
         StaticContext.beforeEachLock = false
     }

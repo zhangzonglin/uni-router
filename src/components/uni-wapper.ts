@@ -45,6 +45,7 @@ function callNavSuccess(methodName:string,options:any){
             }finally{
                 StaticContext.route = StaticContext.toRoute
                 StaticContext.lastFullPath = StaticContext.route ? StaticContext.route.fullPath : undefined
+
                 if(StaticContext.router &&
                     StaticContext.toRoute){
                     StaticContext.router.route = StaticContext.route
@@ -97,8 +98,10 @@ function createWapper(methodName:string){
             const from:Route | undefined = StaticContext.route
             StaticContext.toRoute = to
             StaticContext.fromRoute = from
-
+            StaticContext.destFullPath = to.fullPath
+            
             const hookResult = await invokeBeforeEach(router,to,from)
+
             if(!hookResult){
                 return callNavError(true,options,'路由守卫拦截')
             }
@@ -121,4 +124,5 @@ export function addNavInterceptor(){
     uni.reLaunch = createWapper(METHOD_NAME_RELAUNCH)
     uni.switchTab = createWapper(METHOD_NAME_SWITCH_TAB)
     uni.navigateBack = createWapper(METHOD_NAME_NAVIGATE_BACK)
+
 }

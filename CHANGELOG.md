@@ -1,3 +1,7 @@
+## [1.0.13](https://gitee.com/gowiny/uni-router/compare/v1.0.12...v1.0.13) (2022-12-08)
+
+解决路由拦截重复执行的问题
+
 ## [1.0.12](https://gitee.com/gowiny/uni-router/compare/v1.0.11...v1.0.12) (2022-06-07)
 
 解决导航栏返回按钮无效的问题

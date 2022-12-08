@@ -1,7 +1,7 @@
 declare var uni:any;
-declare function getCurrentPages(isAll:boolean|undefined=false):any;
+declare function getCurrentPages(isAll?:boolean):any;
 declare namespace Page{
-    declare interface PageInstance{
+     interface PageInstance{
         route?:string
     }
 }

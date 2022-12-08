@@ -2,7 +2,7 @@
   "name": "@gowiny/uni-router",
   "alias": "gowiny-uni-router",
   "exportName": "GowinyUniRouter",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "uniapp vue3 版本的 路由守卫，提供beforeEach 和afterEach 2个守卫",
   "main": "dist/index.global.js",
   "module": "dist/index.esm.js",
@@ -25,7 +25,7 @@
     "test:babel": "jest --config=jest.babel.config.js",
     "test:dts": "tsc -p ./test-dts",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
-    "release": "release.sh"
+    "release": "node scripts/release.js"
   },
   "repository": {
     "type": "git",

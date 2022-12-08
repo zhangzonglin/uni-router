@@ -1,4 +1,4 @@
-import { NavType } from "./enums";
+import { NavType,RouterProxyMode } from "./enums";
 
 export interface DebuggerArrayConfig{
     error?:boolean;
@@ -18,7 +18,6 @@ export const UniLifecycleHooks ={
     READY : 'onReady'
 }
 
-export type RouterProxyMode = 'hook'|'method'|'not'
 
 export interface RouterOptions{
     pageData:any,
@@ -40,7 +39,7 @@ export type NavTarget = {
     to:RouteLocationRaw,
     navType:NavType
 }
-export type BeforeEachResult = boolean|undefined|NavTarget
+export type BeforeEachResult = boolean|undefined|NavTarget|string
 
 export interface Route{
     fullPath?:string,

@@ -1,14 +1,14 @@
-import { LifecycleHook, NavType } from './enums';
-import {GuardHookRule,  RouterOptions, RouteRule, RouteRuleMap,
-    RouteLocationRaw, Route, UniLifecycleHook, UniLifecycleHooks,  RouterProxyMode, OriRoute} from './types'
 import {  invoke  } from '@gowiny/js-utils';
+import { LifecycleHook, NavType,RouterProxyMode } from './enums';
+import {GuardHookRule,  RouterOptions, RouteRule, RouteRuleMap,
+    RouteLocationRaw, Route, UniLifecycleHook, UniLifecycleHooks,   OriRoute} from './types'
 import { addNavInterceptor } from './uni-wapper';
 import { Router } from './types';
 import { StaticContext } from './context';
-
-const DEFAULT_PROXY_METHODS = [UniLifecycleHooks.INIT,UniLifecycleHooks.LOAD,UniLifecycleHooks.SHOW,UniLifecycleHooks.READY]
 import {  formatFullPath, getCurrentPage,  getCurrentPagePath,  getRouteByPath, invokeAfterEach, invokeBeforeEach, lockNavjump, parseRoutesFromPages } from './router-utils';
 
+const DEFAULT_PROXY_METHODS = [UniLifecycleHooks.INIT,UniLifecycleHooks.LOAD,UniLifecycleHooks.SHOW,UniLifecycleHooks.READY]
+const MP_TYPE_PAGE = 'page';
 
 function getRouterData(vm:any){
     if(!vm.__routerData){
@@ -83,7 +83,7 @@ function saveCurrRouteByCurrPage(router:Router, vm:any,query:object={}){
 
 
 function wapperMethod(router:Router,vm:any,methodName:string,args:any[]){
-    return wapperFun(router,'method', vm,methodName,args,invokeOriMethod)
+    return wapperFun(router,RouterProxyMode.METHOD, vm,methodName,args,invokeOriMethod)
 }
 
 
@@ -113,7 +113,7 @@ async function wapperFun(router:Router,proxyMode:RouterProxyMode,vm:any,methodNa
     try{
         const path = getCurrentPagePath()
         let query
-        if(proxyMode === 'hook' && ( UniLifecycleHooks.INIT == methodName || UniLifecycleHooks.LOAD == methodName)){
+        if(proxyMode === RouterProxyMode.HOOK && ( UniLifecycleHooks.INIT == methodName || UniLifecycleHooks.LOAD == methodName)){
             query = args[0] || {}
             saveOriRoute(vm,{
                 path,query
@@ -124,7 +124,7 @@ async function wapperFun(router:Router,proxyMode:RouterProxyMode,vm:any,methodNa
         let isOk = true
         if(path){
             const fullPath = formatFullPath(path,query)
-            if(StaticContext.lastFullPath != fullPath){
+            if(StaticContext.destFullPath != fullPath){
                 //console.log(`当前路径跟最后路由路径不一致，需要执行守卫,${methodName}`,fullPath,StaticContext.lastFullPath)
                 const to:Route = getRouteByPath(router,path,query,fullPath)
                 const from:Route | undefined = StaticContext.route
@@ -133,7 +133,6 @@ async function wapperFun(router:Router,proxyMode:RouterProxyMode,vm:any,methodNa
 
                 isOk = await invokeBeforeEach(router,to,from)
                 if(isOk){
-
                     StaticContext.route = to
                     router.route = to
                     StaticContext.lastFullPath = fullPath
@@ -173,7 +172,7 @@ async function wapperFun(router:Router,proxyMode:RouterProxyMode,vm:any,methodNa
 }
 
 function wapperHook(router:Router,vm:any,hookType:string,args:any[]){
-    return wapperFun(router,'hook',vm,hookType,args,invokeOriHooks)
+    return wapperFun(router,RouterProxyMode.HOOK,vm,hookType,args,invokeOriHooks)
 }
 
 function wapperUniHooks(router:Router,vm:any, hookType:UniLifecycleHook){
@@ -244,6 +243,10 @@ export function registerEachHooks(router:Router, hookType:LifecycleHook, userGua
     hooks.push(userGuard)
 }
 
+function isPageHook(vm:any){
+    return vm.$mpType === MP_TYPE_PAGE
+}
+
 export class RouterImpl implements Router {
     readonly proxyMode!:RouterProxyMode
     readonly proxyMethods!:UniLifecycleHook[]
@@ -257,7 +260,7 @@ export class RouterImpl implements Router {
     constructor(options:RouterOptions){
         this.options = options
 
-        this.proxyMode = options.proxyMode || 'hook';
+        this.proxyMode = options.proxyMode || RouterProxyMode.HOOK;
         this.proxyMethods = options.proxyMethods || DEFAULT_PROXY_METHODS
 
         this.routes = parseRoutesFromPages(options.pageData)
@@ -305,10 +308,11 @@ export class RouterImpl implements Router {
         });
 
         let mixinOptions:any
-        if(router.proxyMode === 'hook'){
+        if(router.proxyMode === RouterProxyMode.HOOK){
             mixinOptions = {
                 beforeCreate(){
-                    if(this.$mpType != 'page'){
+                    
+                    if(!isPageHook(this)){
                         return
                     }
 
@@ -318,7 +322,9 @@ export class RouterImpl implements Router {
                         const oldHooks = vm.$[hookName] || []
                         const oldVal:Array<Function> = Array.isArray(oldHooks) ? oldHooks : [oldHooks]
                         oriHookData.oldVal = oldVal
+
                         oriHookData.wapper = wapperUniHooks(router,vm, hookName)
+
                         const newVal = [oriHookData.wapper]
                         const newValObj:any = newVal
 
@@ -382,12 +388,13 @@ export class RouterImpl implements Router {
                     })
                 }
             }
-        }else if(router.proxyMode === 'method'){
+        }else if(router.proxyMode === RouterProxyMode.METHOD){
             mixinOptions = {
                 created(){
-                    if(this.$mpType != 'page'){
+                    if(!isPageHook(this)){
                         return
                     }
+
                     const vm = this
                     const routerData = getRouterData(vm)
                     const oldMethods:Record<string,Function> = {}
@@ -407,13 +414,13 @@ export class RouterImpl implements Router {
                     })
                 },
                 onInit(query:any){
-                    if(this.$mpType != 'page'){
+                    if(!isPageHook(this)){
                         return
                     }
                     saveCurrRouteByCurrPage(router,this,query)
                 },
                 onLoad(query:any){
-                    if(this.$mpType != 'page'){
+                    if(!isPageHook(this)){
                         return
                     }
                     saveCurrRouteByCurrPage(router,this,query)
@@ -423,8 +430,8 @@ export class RouterImpl implements Router {
         mixinOptions && app.mixin(mixinOptions)
 
 
-
         addNavInterceptor()
+
     }
 }
 

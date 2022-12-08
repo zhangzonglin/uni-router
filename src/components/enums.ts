@@ -12,5 +12,11 @@ export const enum LifecycleHook {
     AFTER_EACH = 'ae',
 }
 
+export const enum RouterProxyMode {
+    HOOK = 'hook',
+    METHOD = 'method',
+    NOT = 'not'
+}
+
 
 

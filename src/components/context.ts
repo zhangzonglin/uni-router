@@ -7,6 +7,7 @@ export const StaticContext:{app?:any,router?:Router,route?:Route,
     taskId?:string,
     beforeEachLock:boolean,
     lastFullPath?:string,
+    destFullPath?:string,//准备跳转的路径
     lastPath?:string,
     firstRequestListeners:{
         success:(value:any)=>void,
