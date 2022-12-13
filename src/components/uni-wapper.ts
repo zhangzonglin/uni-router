@@ -39,7 +39,6 @@ function callNavSuccess(methodName:string,options:any){
     const newArgs = {
         ...options,
         async success(...args:any[]){
-
             try{
                 options.success && await options.success(...args)
             }finally{
@@ -57,6 +56,7 @@ function callNavSuccess(methodName:string,options:any){
         },
         async fail(...args:any[]){
             try{
+                console.error(args && args[0] ? args[0].errMsg:'');
                 options.fail && await options.fail(...args)
             }finally{
                 StaticContext.navLock = false
@@ -66,6 +66,7 @@ function callNavSuccess(methodName:string,options:any){
             options.complete && options.complete(...args)
         }
     }
+
     callOldMethod(methodName,newArgs)
 }
 function createWapper(methodName:string){

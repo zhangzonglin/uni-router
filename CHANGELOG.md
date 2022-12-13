@@ -1,3 +1,7 @@
+## [1.0.14](https://gitee.com/gowiny/uni-router/compare/v1.0.13...v1.0.14) (2022-12-13)
+
+添加路由出错的时候，在控制台输出错误信息。
+
 ## [1.0.13](https://gitee.com/gowiny/uni-router/compare/v1.0.12...v1.0.13) (2022-12-08)
 
 解决路由拦截重复执行的问题

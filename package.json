@@ -2,7 +2,7 @@
   "name": "@gowiny/uni-router",
   "alias": "gowiny-uni-router",
   "exportName": "GowinyUniRouter",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "uniapp vue3 版本的 路由守卫，提供beforeEach 和afterEach 2个守卫",
   "main": "dist/index.global.js",
   "module": "dist/index.esm.js",
