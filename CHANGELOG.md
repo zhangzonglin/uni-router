@@ -1,3 +1,7 @@
+## [1.0.15](https://gitee.com/gowiny/uni-router/compare/v1.0.14...v1.0.15) (2022-12-30)
+
+解决微信小程序导航到带参数的页面时，重复执行钩子的问题
+
 ## [1.0.14](https://gitee.com/gowiny/uni-router/compare/v1.0.13...v1.0.14) (2022-12-13)
 
 添加路由出错的时候，在控制台输出错误信息。

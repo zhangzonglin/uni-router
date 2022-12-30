@@ -112,9 +112,17 @@ async function wapperFun(router:Router,proxyMode:RouterProxyMode,vm:any,methodNa
     let result
     try{
         const path = getCurrentPagePath()
-        let query
+        let query:any
         if(proxyMode === RouterProxyMode.HOOK && ( UniLifecycleHooks.INIT == methodName || UniLifecycleHooks.LOAD == methodName)){
             query = args[0] || {}
+            const queryKeys = Object.keys(query);
+            queryKeys.forEach(key => {
+                const val = query[key];
+                if(val){
+                    query[key] = decodeURIComponent(val);
+                }
+            });
+
             saveOriRoute(vm,{
                 path,query
             })

@@ -72,7 +72,7 @@ async function release(versionName){
     await exec(`git tag "v${versionName}"`,'git tag ……');
     await exec(`git push origin refs/tags/v${versionName}`,'git push tag ……');
     await exec(`git push`,'git push ……');
-    
+    await exec("npm publish --tag latest --access public --registry=https://registry.npmjs.org",'发布到 nmpjs ……');
     console.log("发布完成……");
     read.close();
 }
